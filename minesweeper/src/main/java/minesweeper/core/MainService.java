@@ -1,8 +1,7 @@
-package com.game.minesweeper;
+package minesweeper.core;
 
-import com.game.minesweeper.util.ClassUtil;
+import minesweeper.util.ClassUtil;
 
-import javax.swing.*;
 import java.awt.event.MouseEvent;
 
 /**
@@ -76,7 +75,7 @@ public class MainService {
         countRangeMineNums();
     }
 
-    public void start(DataCenter dataCenter) {
+    void start(DataCenter dataCenter) {
         initData(maxY, maxX, mineCount);
         ClassUtil.copyProperty(dataCenter, this);
     }
@@ -120,7 +119,7 @@ public class MainService {
 
     }
 
-    public boolean onLeftMouseReleased(MouseEvent event) {
+    boolean onLeftMouseReleased(MouseEvent event) {
         int x = event.getX() / size;
         int y = event.getY() / size;
         if (!isInMap(x, y) || dataOpen[y][x] || dataFlag[y][x]) return false;
@@ -143,7 +142,7 @@ public class MainService {
      *
      * @return 胜利 True
      */
-    public boolean isWin() {
+    boolean isWin() {
         int flagCount = 0;
         for (int y = 0; y < maxY; y++) {
             for (int x = 0; x < maxX; x++) {
@@ -158,7 +157,7 @@ public class MainService {
         return flagCount == mineCount;
     }
 
-    public int countRight() {
+    int countRight() {
         int rightCount = 0;
         for (int y = 0; y < maxY; y++) {
             for (int x = 0; x < maxX; x++) {
@@ -173,7 +172,7 @@ public class MainService {
     /**
      * 插旗子
      **/
-    public boolean onRightMouseReleased(MouseEvent event) {
+    boolean onRightMouseReleased(MouseEvent event) {
         int x = event.getX() / size;
         int y = event.getY() / size;
         if (!isInMap(x, y)) return false;

@@ -1,6 +1,6 @@
-package com.game.minesweeper.common;
+package minesweeper.common;
 
-import com.game.minesweeper.DataCenter;
+import minesweeper.core.DataCenter;
 
 public interface DataChangeListener {
     void dataChanged(DataCenter source);

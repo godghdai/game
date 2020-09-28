@@ -1,6 +1,6 @@
-package com.game.minesweeper;
+package minesweeper.gui;
 
-import com.game.minesweeper.gui.JNumberField;
+import minesweeper.core.GameControl;
 
 import javax.swing.*;
 import java.awt.*;

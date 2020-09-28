@@ -1,6 +1,6 @@
-package com.game.minesweeper;
+package minesweeper.core;
 
-import com.game.minesweeper.util.Copy;
+import minesweeper.util.Copy;
 
 /**
  * @author godghdai

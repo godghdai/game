@@ -1,4 +1,4 @@
-package com.game.minesweeper.util;
+package minesweeper.util;
 
 import java.lang.reflect.Field;
 

@@ -1,13 +1,15 @@
-package com.game.minesweeper;
+package minesweeper.gui;
 
-import com.game.minesweeper.common.DataChangeListener;
-import com.game.minesweeper.gui.JMainMenuBar;
-import com.game.minesweeper.util.ClassUtil;
-import com.game.minesweeper.util.Copy;
+import minesweeper.core.DataCenter;
+import minesweeper.core.GameControl;
+import minesweeper.common.DataChangeListener;
+import minesweeper.util.ClassUtil;
+import minesweeper.util.Copy;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 
 /**
  * @author godghdai
@@ -15,7 +17,8 @@ import java.awt.event.*;
  * #Date: 2020/9/27 14:05
  */
 
-public class MineFrame extends JFrame implements DataChangeListener{
+public class MainFrame extends JFrame implements DataChangeListener {
+    private static Image icon = new ImageIcon(ClassLoader.getSystemResource("app.png")).getImage();
     private MinePanel canvasPanel;
     private GameControl control;
     private DataCenter dataCenter;
@@ -32,11 +35,13 @@ public class MineFrame extends JFrame implements DataChangeListener{
     @Copy
     private int maxY;
 
-    private static Image image = new ImageIcon(ClassLoader.getSystemResource("扫雷.png")).getImage();
-    private static Image icon = new ImageIcon(ClassLoader.getSystemResource("app.png")).getImage();
+    private int width;
+    private int height;
     private JLabel jLabelMineCount;
     private JLabel jLabelMineRemain;
-    public MineFrame(String title, int width, int height, DataCenter dataCenter, GameControl control) {
+    private BufferedImage bufferedImage;
+
+    public MainFrame(String title, int width, int height, DataCenter dataCenter, GameControl control) {
         super(title);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         ClassUtil.copyProperty(this, dataCenter);
@@ -47,45 +52,48 @@ public class MineFrame extends JFrame implements DataChangeListener{
         setIconImage(icon);
     }
 
-    public void initGui(int width, int height) {
+    private void initGui(int width, int height) {
+        this.width = width;
+        this.height = height;
         JMainMenuBar menuBar = new JMainMenuBar();
         menuBar.setControl(control);
         setJMenuBar(menuBar);
         setLayout(new BorderLayout());
         canvasPanel.setPreferredSize(new Dimension(width, height));
         add(canvasPanel, "Center");
+        initNorthPanel();
+        //setResizable(false);
+        pack();
+    }
 
+    private void initNorthPanel() {
         JPanel northPanel = new JPanel();
         northPanel.setPreferredSize(new Dimension(width, 24));
         northPanel.setLayout(new GridLayout(1, 4, 0, 0));
         jLabelMineCount = new JLabel("总雷数:" + dataCenter.mineCount);
         northPanel.add(jLabelMineCount);
-        jLabelMineRemain=new JLabel("剩余数:"+ dataCenter.mineCount);
+        jLabelMineRemain = new JLabel("剩余数:" + dataCenter.mineCount);
         northPanel.add(jLabelMineRemain);
         add(northPanel, "South");
-        //setResizable(false);
-        pack();
-    }
-
-    public void setRemain(int count){
-        jLabelMineRemain.setText("剩余数:"+count);
     }
 
     public void showCenter() {
-
         setLocationRelativeTo(null);
         setVisible(true);
     }
 
     @Override
     public void dataChanged(DataCenter source) {
-        System.out.println("MineFrame dataChanged");
+        //System.out.println("MineFrame dataChanged");
         ClassUtil.copyProperty(this, source);
         jLabelMineCount.setText("雷数:" + source.mineCount);
-        jLabelMineRemain.setText("剩余数:"+ source.mineCount);
-        canvasPanel.setPreferredSize(new Dimension(maxX * size, maxY * size));
+        jLabelMineRemain.setText("剩余数:" + source.mineCount);
+        width = maxX * size;
+        height = maxY * size;
+        canvasPanel.setPreferredSize(new Dimension(width, height));
         pack();
         setLocationRelativeTo(null);
+        bufferedImage = null;
     }
 
     private class MinePanel extends JPanel {
@@ -99,45 +107,36 @@ public class MineFrame extends JFrame implements DataChangeListener{
             });
         }
 
-        void drawBg(Graphics g) {
-            int offsetX;
+        void drawBackground(Graphics g) {
+            if (bufferedImage != null) {
+                g.drawImage(bufferedImage, 0, 0, width, height, null);
+                return;
+            }
+            bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_BGR);
+            Graphics graphics = bufferedImage.getGraphics();
+
             for (int y = 0; y < maxY; y++) {
                 for (int x = 0; x < maxX; x++) {
-                    int dx1 = x * size;
-                    int dy1 = y * size;
-                    int dx2 = dx1 + size;
-                    int dy2 = dy1 + size;
                     if (data[y][x] == -1) {
-                        g.drawImage(image, dx1, dy1, dx2, dy2, 32, 0, 64, 32, null);
+                        Sprite.drawImage(graphics, x, y, Sprite.Mine);
                     } else if (data[y][x] > 0) {
-                        offsetX = data[y][x] * 32 + 96;
-                        g.drawImage(image, dx1, dy1, dx2, dy2, offsetX, 0, offsetX + 32, 32, null);
+                        Sprite.drawImage(graphics, x, y, Sprite.Number + data[y][x] - 1);
                     } else if (data[y][x] == 0) {
-                        offsetX = 3 * 32;
-                        g.drawImage(image, dx1, dy1, dx2, dy2, offsetX, 0, offsetX + 32, 32, null);
+                        Sprite.drawImage(graphics, x, y, Sprite.Blank);
                     }
                 }
             }
         }
 
-        void drawMask(Graphics g) {
+        void drawMaskFlag(Graphics g) {
             for (int y = 0; y < maxY; y++) {
                 for (int x = 0; x < maxX; x++) {
                     if (!dataOpen[y][x]) {
-                        g.drawImage(image, x * 32, y * 32, x * 32 + 32, y * 32 + 32, 0, 0, 32, 32, null);
+                        Sprite.drawImage(g, x, y, Sprite.Mask);
                     }
-
-                }
-            }
-        }
-
-        public void drawFlag(Graphics g) {
-            for (int y = 0; y < maxY; y++) {
-                for (int x = 0; x < maxX; x++) {
                     if (dataFlag[y][x]) {
-                        g.drawImage(image, x * 32, y * 32, x * 32 + 32, y * 32 + 32, 64, 0, 96, 32, null);
+                        Sprite.drawImage(g, x, y, Sprite.Flag);
                     }
-
                 }
             }
         }
@@ -145,11 +144,14 @@ public class MineFrame extends JFrame implements DataChangeListener{
         @Override
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
-            drawBg(g);
-            drawMask(g);
-            drawFlag(g);
+            drawBackground(g);
+            drawMaskFlag(g);
         }
 
+    }
+
+    public void setRemain(int count) {
+        jLabelMineRemain.setText("剩余数:" + count);
     }
 
 }

@@ -1,6 +1,6 @@
-package com.game.minesweeper.gui;
+package minesweeper.gui;
 
-import com.game.minesweeper.GameControl;
+import minesweeper.core.GameControl;
 
 import javax.swing.*;
 

@@ -1,4 +1,4 @@
-package com.game.minesweeper.gui;
+package minesweeper.gui;
 
 import javax.swing.*;
 import java.awt.event.KeyAdapter;
