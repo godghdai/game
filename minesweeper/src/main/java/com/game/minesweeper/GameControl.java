@@ -21,7 +21,17 @@ public class GameControl {
             mainService.onRightMouseReleased(event);
             frame.setRemain(dataCenter.mineCount-mainService.countRight());
         } else {
-            mainService.onLeftMouseReleased(event);
+
+            if(mainService.onLeftMouseReleased(event)){
+                frame.repaint();
+                int res= JOptionPane.showConfirmDialog(null,
+                        "你输了，是否重新开始？？",
+                        "提示",JOptionPane.YES_NO_OPTION);
+                if(res==JOptionPane.YES_OPTION){
+                    mainService.start(dataCenter);
+                    frame.dataChanged(dataCenter);
+                }
+            }
         }
         frame.repaint();
         if(mainService.isWin()){
@@ -42,6 +52,7 @@ public class GameControl {
     public void onClickedSetting(){
         ConfigDialog dialog=new ConfigDialog(frame);
         dialog.setControl(this);
+        dialog.setValues(dataCenter.maxY,dataCenter.maxX,dataCenter.mineCount);
         dialog.display();
     }
 

@@ -2,6 +2,7 @@ package com.game.minesweeper;
 
 import com.game.minesweeper.util.ClassUtil;
 
+import javax.swing.*;
 import java.awt.event.MouseEvent;
 
 /**
@@ -133,7 +134,7 @@ public class MainService {
             return true;
         }
         dataOpen[y][x] = true;
-        return true;
+        return false;
 
     }
 

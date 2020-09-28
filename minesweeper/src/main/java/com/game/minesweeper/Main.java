@@ -9,7 +9,7 @@ public class Main {
         GameControl gameControl = new GameControl();
 
         MainService mainService = new MainService();
-        mainService.initData(rows , cols ,5);
+        mainService.initData(rows , cols ,20);
         gameControl.setMainService(mainService);
         mainService.copyToDataCenter(dataCenter);
         gameControl.setDataCenter(dataCenter);
