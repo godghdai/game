@@ -10,24 +10,25 @@ import java.lang.reflect.Field;
 public class ClassUtil {
     /**
      * 根据Copy注解拷贝实例属性值
+     *
      * @param toObj
      * @param fromObj
      */
-    public static void copyProperty(Object toObj,Object fromObj) {
+    public static void copyProperty(Object toObj, Object fromObj) {
         Field[] fields = toObj.getClass().getDeclaredFields();
         for (Field toField : fields) {
             Copy[] copyInfo = toField.getAnnotationsByType(Copy.class);
-            if (copyInfo.length == 1) {
-                try {
-                    Field fromField = fromObj.getClass().getDeclaredField(toField.getName());
-                    fromField.setAccessible(true);
-                    toField.setAccessible(true);
-                    toField.set(toObj, fromField.get(fromObj));
-                } catch (Exception e) {
+            if (copyInfo.length != 1) continue;
+            try {
+                Field fromField = fromObj.getClass().getDeclaredField(toField.getName());
+                fromField.setAccessible(true);
+                toField.setAccessible(true);
+                toField.set(toObj, fromField.get(fromObj));
+            } catch (Exception e) {
 
-                    e.printStackTrace();
-                }
+                e.printStackTrace();
             }
+
         }
     }
 }

@@ -21,9 +21,15 @@ public class JMainMenuBar extends JMenuBar {
                 control.onClickedSetting();
         });
 
+        JMenuItem restart = new JMenuItem("重新开始");
+        restart.addActionListener(e -> {
+            if (control != null)
+                control.restart("确认重新开始？",true);
+        });
         JMenuItem exit = new JMenuItem("退出");
         exit.addActionListener(e -> System.exit(0));
         file.add(setting);
+        file.add(restart);
         file.addSeparator();
         file.add(exit);
         add(file);

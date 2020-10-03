@@ -1,7 +1,7 @@
 package minesweeper.common;
 
-import minesweeper.core.DataCenter;
+import minesweeper.core.DataStore;
 
 public interface DataChangeListener {
-    void dataChanged(DataCenter source);
+    void dataChanged(DataStore source);
 }

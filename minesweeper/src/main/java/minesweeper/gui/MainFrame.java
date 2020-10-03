@@ -1,6 +1,6 @@
 package minesweeper.gui;
 
-import minesweeper.core.DataCenter;
+import minesweeper.core.DataStore;
 import minesweeper.core.GameControl;
 import minesweeper.common.DataChangeListener;
 import minesweeper.util.ClassUtil;
@@ -21,7 +21,7 @@ public class MainFrame extends JFrame implements DataChangeListener {
     private static Image icon = new ImageIcon(ClassLoader.getSystemResource("app.png")).getImage();
     private MinePanel canvasPanel;
     private GameControl control;
-    private DataCenter dataCenter;
+    private DataStore dataStore;
     @Copy
     private int[][] data = null;
     @Copy
@@ -41,20 +41,20 @@ public class MainFrame extends JFrame implements DataChangeListener {
     private JLabel jLabelMineRemain;
     private BufferedImage bufferedImage;
 
-    public MainFrame(String title, int width, int height, DataCenter dataCenter, GameControl control) {
+    public MainFrame(String title, DataStore dataStore, GameControl control) {
         super(title);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        ClassUtil.copyProperty(this, dataCenter);
+        ClassUtil.copyProperty(this, dataStore);
         canvasPanel = new MinePanel();
         this.control = control;
-        this.dataCenter = dataCenter;
-        initGui(width, height);
+        this.dataStore = dataStore;
+        this.width = maxX * size;
+        this.height = maxY * size;
+        initGui();
         setIconImage(icon);
     }
 
-    private void initGui(int width, int height) {
-        this.width = width;
-        this.height = height;
+    private void initGui() {
         JMainMenuBar menuBar = new JMainMenuBar();
         menuBar.setControl(control);
         setJMenuBar(menuBar);
@@ -70,9 +70,9 @@ public class MainFrame extends JFrame implements DataChangeListener {
         JPanel northPanel = new JPanel();
         northPanel.setPreferredSize(new Dimension(width, 24));
         northPanel.setLayout(new GridLayout(1, 4, 0, 0));
-        jLabelMineCount = new JLabel("总雷数:" + dataCenter.mineCount);
+        jLabelMineCount = new JLabel("总雷数:" + dataStore.mineCount);
         northPanel.add(jLabelMineCount);
-        jLabelMineRemain = new JLabel("剩余数:" + dataCenter.mineCount);
+        jLabelMineRemain = new JLabel("剩余数:" + dataStore.mineCount);
         northPanel.add(jLabelMineRemain);
         add(northPanel, "South");
     }
@@ -83,16 +83,19 @@ public class MainFrame extends JFrame implements DataChangeListener {
     }
 
     @Override
-    public void dataChanged(DataCenter source) {
-        //System.out.println("MineFrame dataChanged");
+    public void dataChanged(DataStore source) {
         ClassUtil.copyProperty(this, source);
         jLabelMineCount.setText("雷数:" + source.mineCount);
         jLabelMineRemain.setText("剩余数:" + source.mineCount);
         width = maxX * size;
         height = maxY * size;
-        canvasPanel.setPreferredSize(new Dimension(width, height));
+        remove(canvasPanel);
+        canvasPanel = new MinePanel();
+        canvasPanel.setPreferredSize(new Dimension(width,height));
+        add(canvasPanel, "Center");
         pack();
         setLocationRelativeTo(null);
+
         bufferedImage = null;
     }
 

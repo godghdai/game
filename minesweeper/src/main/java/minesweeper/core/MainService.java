@@ -75,13 +75,13 @@ public class MainService {
         countRangeMineNums();
     }
 
-    void start(DataCenter dataCenter) {
+    void start(DataStore dataStore) {
         initData(maxY, maxX, mineCount);
-        ClassUtil.copyProperty(dataCenter, this);
+        ClassUtil.copyProperty(dataStore, this);
     }
 
-    public void copyToDataCenter(DataCenter dataCenter) {
-        ClassUtil.copyProperty(dataCenter, this);
+    public void copyToDataCenter(DataStore dataStore) {
+        ClassUtil.copyProperty(dataStore, this);
     }
 
     /**
@@ -176,6 +176,7 @@ public class MainService {
         int x = event.getX() / size;
         int y = event.getY() / size;
         if (!isInMap(x, y)) return false;
+       // if(dataOpen[y][x]) return false;
         dataFlag[y][x] = !dataFlag[y][x];
         return true;
     }

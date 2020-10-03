@@ -57,6 +57,9 @@
         </repository>
     </repositories>
 
+    <dependencies>
+    </dependencies>
+
     <pluginRepositories>
         <pluginRepository>
             <id>alimaven</id>
