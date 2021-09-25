@@ -2,3 +2,4 @@
 ```
 java -jar ./minesweeper.jar
 ```
+![](./demo.jpg)
