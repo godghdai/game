@@ -1,4 +1,4 @@
-#### 运行：
+#### java版扫雷
 ```
 java -jar ./minesweeper.jar
 ```
